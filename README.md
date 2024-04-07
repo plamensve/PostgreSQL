@@ -1,4 +1,4 @@
-<b>PostgreSQL Educational Materials Repository</b>
+<b>PostgreSQL Educational Materials Repository</b><br>
 Welcome to the PostgreSQL Educational Materials Repository! This repository is dedicated to storing educational resources related to PostgreSQL databases. 
 Whether you're a beginner looking to learn the basics or an experienced user seeking advanced knowledge, you'll find a wealth of materials here to support your journey.
 
