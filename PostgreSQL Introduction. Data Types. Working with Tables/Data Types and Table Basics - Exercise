@@ -1,4 +1,4 @@
-CREATE TABLE minions(
+CREATE TABLE minions(			-----> Create table with different columns
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(30),
 	age INTEGER
@@ -6,4 +6,23 @@ CREATE TABLE minions(
 
 --------------------------------------------
 
-ALTER TABLE minions RENAME TO minions_info
+ALTER TABLE minions RENAME TO minions_info	-----> Rename table name
+
+--------------------------------------------
+
+ALTER TABLE minions_info			-----> Add more columns
+
+ADD COLUMN code CHAR(4),
+ADD COLUMN task TEXT, 
+ADD COLUMN salary NUMERIC(8, 3);
+
+--------------------------------------------
+
+ALTER TABLE minions_info			-----> Change the name of the column
+RENAME COLUMN salary TO banana
+
+--------------------------------------------
+
+ALTER TABLE minions_info			-----> Add more columns with constrains
+ADD COLUMN email VARCHAR(20),
+ADD COLUMN equipped BOOLEAN NOT NULL;
