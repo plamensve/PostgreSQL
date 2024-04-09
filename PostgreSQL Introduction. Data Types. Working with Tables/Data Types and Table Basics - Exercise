@@ -58,3 +58,25 @@ ADD CONSTRAINT banana_check CHECK(banana > 0);
 
 ALTER TABLE minions_info				-----> Change column date type from TEXT to VARCHAR(100)
 ALTER COLUMN task TYPE VARCHAR(150)
+
+------------------------------------------
+
+CREATE TABLE minions_birthdays(				-----> Created new table
+	id INTEGER UNIQUE NOT NULL,
+	name VARCHAR(50),
+	date_of_birth DATE,
+	age INTEGER,
+	present VARCHAR(100), 
+	party TIMESTAMPTZ
+);
+
+-----------------------------------------
+
+SELECT						----> Selecting and return information about the chosen fields
+	name,
+	task,
+	email, 
+	banana
+FROM minions_info
+
+----------------------------------------
