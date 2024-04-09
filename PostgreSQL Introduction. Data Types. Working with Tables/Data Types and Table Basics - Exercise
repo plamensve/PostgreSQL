@@ -40,4 +40,11 @@ AS ENUM (
 ALTER TABLE minions_info
 ADD COLUMN mood type_mood
 
+--------------------------------------------
+
+ALTER TABLE minions_info			-----> Change column age - set default age. Change column name - set default empty string. Change column code - set default empty string
+ALTER COLUMN age SET DEFAULT 0,
+ALTER COLUMN "name" SET DEFAULT '',
+ALTER COLUMN code SET DEFAULT '';
+
 
