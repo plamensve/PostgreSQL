@@ -1,4 +1,4 @@
-CREATE TABLE minions(			-----> Create table with different columns
+CREATE TABLE minions(			-----> Create table with different columns.
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(30),
 	age INTEGER
