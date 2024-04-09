@@ -26,3 +26,18 @@ RENAME COLUMN salary TO banana
 ALTER TABLE minions_info			-----> Add more columns with constrains
 ADD COLUMN email VARCHAR(20),
 ADD COLUMN equipped BOOLEAN NOT NULL;
+
+--------------------------------------------
+
+CREATE TYPE type_mood				-----> Create custom type mode with 4 options, add new column with this custom type
+AS ENUM (
+	'happy',
+	'relaxed',
+	'stressed',
+	'sad'
+);
+
+ALTER TABLE minions_info
+ADD COLUMN mood type_mood
+
+
