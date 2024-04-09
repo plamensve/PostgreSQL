@@ -53,3 +53,8 @@ ALTER TABLE minions_info
 
 ADD CONSTRAINT unique_containt UNIQUE(id, email),	-----> Аdd constraint - column id and email should be unique value and the value in banana column should be above zero (0)
 ADD CONSTRAINT banana_check CHECK(banana > 0);
+
+-------------------------------------------
+
+ALTER TABLE minions_info				-----> Change column date type from TEXT to VARCHAR(100)
+ALTER COLUMN task TYPE VARCHAR(150)
