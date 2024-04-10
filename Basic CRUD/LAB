@@ -1,1 +1,32 @@
+SELECT                                                      -----> Selecting id, first_name, last_name, job_title columns. Concatenate first_name and last_name in Full Name
+	id,
+	concat(first_name,' ', last_name) AS "Full Name",
+	job_title AS "Job Title"
+FROM employees
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT                                                    -----> Select Employees by Filtering and Ordering
+	id,
+	concat(first_name, ' ', last_name) AS "full_name",
+	job_title,
+	salary
+FROM
+	employees
+WHERE
+	salary > 1000.00
+ORDER BY id;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                        
+SELECT                                                     -----> Select Employees by Multiple Filters
+	*
+FROM
+	employees
+	
+WHERE 
+	department_id = 4
+	AND salary > 1000.00	
+ORDER BY id;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
