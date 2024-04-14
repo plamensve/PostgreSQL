@@ -182,21 +182,77 @@ FROM
 	employees;
 
 
+--------------------------------------------------------------------------------------------------------------------------------
+							-----> Update the Project End Date
+UPDATE
+	projects
+SET
+	end_date = start_date + INTERVAL '5 months'
+WHERE
+	end_date IS NULL
+
+--------------------------------------------------------------------------------------------------------------------------------
+								-----> Award Employees with Experience
+UPDATE
+	employees
+SET
+	salary = salary + 1500,
+	job_title = CONCAT_WS(' ', 'Senior', job_title)
+
+WHERE
+	hire_date BETWEEN '1998-01-01' AND '2000-01-05'
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+DELETE FROM						-----> Delete Addresses
+	addresses
+WHERE
+	city_id IN (5, 17, 20, 30)
+
+--------------------------------------------------------------------------------------------------------------------------------
+							-----> Create a View
+CREATE VIEW
+	view_company_chart
+AS
+SELECT
+	full_name, 
+	job_title
+FROM
+	company_chart
+WHERE 
+	manager_id = 184
+
+--------------------------------------------------------------------------------------------------------------------------------
+							-----> Create a View with Multiple Tables
+
+CREATE VIEW 
+	view_addresses
+AS
+SELECT
+    CONCAT(e.first_name, ' ', e.last_name) AS "full_name",
+	e.department_id,
+	CONCAT(a.number, ' ', a.street) AS "address"
+FROM
+    employees AS e
+JOIN
+	addresses AS a
+		ON
+	e.address_id = a.id
+ORDER BY
+	"address" ASC;
 
 
+--------------------------------------------------------------------------------------------------------------------------------
+
+ALTER VIEW view_addresses				-----> ALTER VIEW
+RENAME TO view_employee_addresses_info
 
 
+--------------------------------------------------------------------------------------------------------------------------------
 
+DROP VIEW view_company_chart				-----> DROP VIEW
 
-
-
-
-
-
-
-
-
-
+--------------------------------------------------------------------------------------------------------------------------------
 
 
 
