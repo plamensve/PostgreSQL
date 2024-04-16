@@ -4,7 +4,7 @@ CREATE TABLE minions(			-----> Create table with different columns.
 	age INTEGER
 )
 
---------------------------------------------
+---------------------------------------------
 
 ALTER TABLE minions RENAME TO minions_info	-----> Rename table name
 
