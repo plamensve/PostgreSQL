@@ -6,4 +6,68 @@ WHERE
 	SUBSTRING(title, 1, 3) = 'The'
 ORDER BY id
 
------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+SELECT 						-----> Replace Titles
+    REPLACE(title, 'The', '***') AS t
+FROM 
+    books
+WHERE 
+    SUBSTRING(title, 1, 3) = 'The';
+
+
+-----------------------------------------------------------------------------------------------------------
+
+SELECT							-----> Triangles on Bookshelves
+	id,
+	(side * height) / 2 AS area
+FROM
+	triangles
+ORDER BY id
+
+-----------------------------------------------------------------------------------------------------------
+
+SELECT							-----> Format Costs
+	title,
+	TRUNC(cost, 3) AS modified_price
+FROM
+	books
+ORDER BY id
+
+
+-----------------------------------------------------------------------------------------------------------
+
+
+SELECT								-----> Year of Birth
+	first_name,
+	last_name,
+	EXTRACT(year FROM born) AS year
+FROM
+	authors
+
+-----------------------------------------------------------------------------------------------------------
+
+SELECT								-----> Format Date of Birth
+	last_name AS "Last Name",
+	TO_CHAR(born, 'DD (Dy) Mon YYYY') AS "Date of Birth"
+FROM
+	authors;
+
+-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
