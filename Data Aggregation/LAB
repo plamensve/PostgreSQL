@@ -1,1 +1,9 @@
+SELECT                        ----> Departments Info by ID - group by only with department_id
+	department_id,
+	COUNT(department_id)
+FROM
+	employees
+GROUP BY department_id
+ORDER BY department_id
 
+--------------------------------------------------------------------------------------------------------
