@@ -1,1 +1,99 @@
+SELECT                                          ----> COUNT of Records
+	COUNT(*)
+FROM
+	wizard_deposits
+
+--------------------------------------------------------------------------------
+
+SELECT                                        ----> Total Deposit Amount
+
+	SUM(deposit_amount)
+FROM
+	wizard_deposits
+
+--------------------------------------------------------------------------------
+
+SELECT                                      ----> AVG Magic Wand Size
+	ROUND(AVG(magic_wand_size), 3)
+FROM
+	wizard_deposits
+
+--------------------------------------------------------------------------------
+
+SELECT                                      ----> MIN Deposit Charge
+	MIN(deposit_charge)
+FROM
+	wizard_deposits
+
+--------------------------------------------------------------------------------
+
+SELECT                                      ----> MAX Age
+	MAX(age)
+FROM
+	wizard_deposits
+
+--------------------------------------------------------------------------------
+
+SELECT                                          ----> GROUP BY Deposit Interest
+	deposit_group,
+	SUM(deposit_interest) AS deposit_interest
+FROM
+	wizard_deposits
+GROUP BY deposit_group
+ORDER BY deposit_interest DESC
+
+--------------------------------------------------------------------------------
+
+SELECT                                            ----> LIMIT the Magic Wand Creator
+	magic_wand_creator,
+	MIN(magic_wand_size) AS minimum_wand_size
+FROM
+	wizard_deposits
+GROUP BY magic_wand_creator
+ORDER BY minimum_wand_size ASC
+LIMIT 5
+
+--------------------------------------------------------------------------------
+
+SELECT                                                ----> Mr. Bodrog is interested in the profitability of the bank and wants to know the average interest rates of all "deposit_groups" rounded down to the nearest integer. 
+	deposit_group,                                     The query should categorize the deposits based on whether they have expired or not and retrieve data only for deposits that have a "deposit_start_date" after '1985-01-01'. 
+	is_deposit_expired,                                                                                 The results should be sorted in descending order by "deposit_group" and ascending order by the "is_deposit_expired" flag.
+	FLOOR(AVG(deposit_interest)) AS deposit_interest
+FROM
+	wizard_deposits
+WHERE deposit_start_date > '1985-01-01'
+GROUP BY deposit_group, is_deposit_expired
+ORDER BY deposit_group DESC, is_deposit_expired
+
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
