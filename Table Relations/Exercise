@@ -18,7 +18,7 @@ ADD COLUMN
 ALTER TABLE products					-----> Remove Primary Key
 DROP CONSTRAINT products_pkey;
 
----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 
 CREATE TABLE passports (								----> Customs
     id INT GENERATED ALWAYS AS IDENTITY (START WITH 100 INCREMENT BY 1) PRIMARY KEY,
