@@ -125,9 +125,20 @@ ORDER BY
 
 -----------------------------------------------------------------------------------------------------------------------
 
+SELECT									----->  Bulgaria's Peaks Higher than 2835 Meters
+	mc.country_code AS country_code,
+	m.mountain_range,
+	p.peak_name,
+	p.elevation
+FROM
+	mountains_countries AS mc
+	JOIN mountains AS m ON mc.mountain_id = m.id
+		JOIN peaks as p ON m.id = p.mountain_id
+WHERE
+	p.elevation > 2835 AND country_code = 'BG'
+ORDER BY p.elevation DESC
 
-
-
+-----------------------------------------------------------------------------------------------------------------------
 
 
 
