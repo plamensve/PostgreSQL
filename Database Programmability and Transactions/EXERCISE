@@ -1,1 +1,10 @@
+CREATE OR REPLACE FUNCTION fn_full_name(first_name VARCHAR, last_name VARCHAR)                          -----> User-defined Function Full Name
+RETURNS VARCHAR AS
+    $$
+        BEGIN
+            RETURN INITCAP(CONCAT(first_name, ' ', last_name));
+        end;
+    $$
+LANGUAGE plpgsql;
 
+-------------------------------------------------------------------------------------------------------------------------------------------
