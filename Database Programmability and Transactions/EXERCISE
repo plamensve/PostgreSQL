@@ -188,9 +188,31 @@ LANGUAGE plpgsql;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
+CREATE OR REPLACE PROCEDURE sp_withdraw_money(							-----> Withdraw Money
+    account_id INT,
+    money_amount NUMERIC(4)
+)
+AS
+    $$
+        DECLARE
+        money_for_withdraw NUMERIC(4);
+        BEGIN
+            IF money_amount > (SELECT balance FROM accounts WHERE account_id = id) THEN
+                RAISE NOTICE 'Insufficient balance to withdraw %', money_amount;
+            ELSIF
+                money_amount <= (SELECT balance FROM accounts WHERE account_id = id) THEN
+                UPDATE accounts AS a
+                SET balance = balance - money_amount
+                WHERE
+                    a.id = account_id;
+            END IF;
+        end;
+    $$
+LANGUAGE plpgsql;
 
+CALL sp_withdraw_money(1, 300)
 
-
+-------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
