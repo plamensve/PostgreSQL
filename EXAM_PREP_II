@@ -1,0 +1,299 @@
+CREATE TABLE countries(                                      ----> Database Design
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE customers(
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(25) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    gender CHAR(1) CHECK (gender IN ('M', 'F')),
+    age INT CHECK ( age > 0 ) NOT NULL,
+    phone_number CHAR(10) NOT NULL,
+    country_id INT NOT NULL,
+
+    CONSTRAINT fk_customers_countries
+    FOREIGN KEY (country_id)
+    REFERENCES countries(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE products(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    description VARCHAR(250),
+    recipe TEXT,
+    price NUMERIC(10, 2) NOT NULL CHECK ( price > 0 )
+);
+
+CREATE TABLE feedbacks(
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255),
+    rate NUMERIC(4, 2) CHECK (rate >= 0 AND rate <= 10),
+    product_id INT NOT NULL,
+    customer_id INT NOT NULL,
+
+    CONSTRAINT fk_feedbacks_products
+    FOREIGN KEY (product_id)
+    REFERENCES products(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+    CONSTRAINT fk_feedbacks_customers
+    FOREIGN KEY (customer_id)
+    REFERENCES customers(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+CREATE TABLE distributors(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(25) UNIQUE NOT NULL,
+    address VARCHAR(30) NOT NULL,
+    summary VARCHAR(200) NOT NULL,
+    country_id INT NOT NULL,
+
+    CONSTRAINT fk_distributors_countries
+    FOREIGN KEY (country_id)
+    REFERENCES countries(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE ingredients(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    description VARCHAR(200),
+    country_id INT NOT NULL,
+    distributor_id INT NOT NULL,
+
+    CONSTRAINT fk_ingredients_countries
+    FOREIGN KEY (country_id)
+    REFERENCES countries(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+    CONSTRAINT fk_ingredients_distributors
+    FOREIGN KEY (distributor_id)
+    REFERENCES distributors(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE products_ingredients(
+    product_id INT,
+    ingredient_id INT,
+
+    CONSTRAINT fk_products_ingredients_products
+    FOREIGN KEY (product_id)
+    REFERENCES products(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+    CONSTRAINT fk_products_ingredients_ingredients
+    FOREIGN KEY (ingredient_id)
+    REFERENCES ingredients(id)
+
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE gift_recipients(                                            -----> Insert
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    country_id INT,
+    gift_sent BOOLEAN DEFAULT false
+);
+
+INSERT INTO gift_recipients (name, country_id, gift_sent)
+SELECT
+    CONCAT(first_name, ' ', last_name) AS name,
+    country_id,
+    CASE
+    WHEN country_id IN (7, 8, 14, 17, 26) THEN TRUE
+    ELSE FALSE
+    END AS gift_sent
+FROM
+    customers;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+UPDATE products
+SET price = price * 1.10
+WHERE id IN (
+   SELECT product_id
+   FROM feedbacks
+   WHERE rate > 8
+);
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DELETE FROM distributors
+WHERE
+    name LIKE 'L%'
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+select
+    name,
+    recipe,
+    price
+from
+    products
+WHERE
+    price between 10 AND 20
+ORDER BY
+    price DESC;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    f.product_id AS product_id,
+    f.rate,
+    f.description,
+    f.customer_id,
+    c.age,
+    c.gender
+
+FROM
+    feedbacks AS f
+    JOIN customers AS c ON f.customer_id = c.id
+WHERE
+    (f.rate < 5.0 AND c.gender = 'F')
+    AND
+    c.age > 30
+ORDER BY
+    f.product_id DESC;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+   p.name,
+   ROUND(AVG(p.price), 2) AS average_price,
+   COUNT(f.product_id) AS total_feedbacks
+FROM
+    products AS p
+    JOIN feedbacks AS f ON p.id = f.product_id
+WHERE
+    p.price > 15
+GROUP BY p.name
+HAVING
+    COUNT(f.product_id) > 1
+ORDER BY
+    total_feedbacks
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    i.name,
+    p.name,
+    d.name
+FROM
+    ingredients AS i
+    JOIN products_ingredients AS pi ON i.id = pi.ingredient_id
+    JOIN products AS p ON pi.product_id = p.id
+    JOIN distributors AS d ON i.distributor_id = d.id
+WHERE
+    i.name = 'Mustard'
+    AND
+    d.country_id = 16
+ORDER BY
+    p.name
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    d.name AS distributor_name,
+    i.name AS ingredient_name,
+    p.name AS product_name,
+    AVG(f.rate) AS average_rate
+FROM
+    distributors AS d
+    JOIN ingredients AS i ON d.id = i.distributor_id
+    JOIN products_ingredients AS pi ON i.id = pi.ingredient_id
+    JOIN products AS p ON pi.product_id = p.id
+    JOIN feedbacks AS f ON p.id = f.product_id
+GROUP BY
+    d.name, i.name, p.name
+HAVING
+    AVG(f.rate) BETWEEN 5 AND 8
+ORDER BY
+    d.name, i.name, p.name
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION fn_feedbacks_for_product(product_name VARCHAR(25))
+RETURNS TABLE
+    (customer_id INT,
+     customer_name VARCHAR(75),
+     feedback_description VARCHAR(255),
+     feedback_rate NUMERIC(4, 2))
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                f.customer_id,
+                c.first_name AS customer_name,
+                f.description AS feedback_description,
+                f.rate AS feedback_rate
+            FROM
+                feedbacks AS f
+                JOIN customers AS c ON f.customer_id = c.id
+                JOIN products AS p ON f.product_id = p.id
+            WHERE
+                p.name = product_name
+            ORDER BY
+                f.customer_id;
+        end;
+    $$
+LANGUAGE plpgsql;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE sp_customer_country_name(
+    IN customer_full_name VARCHAR(50),
+    OUT country_name VARCHAR(50)
+)
+AS
+$$
+BEGIN
+    SELECT
+        ct.name
+    INTO
+        country_name
+    FROM
+        customers AS c
+    JOIN
+        countries AS ct ON c.country_id = ct.id
+    WHERE
+        CONCAT(c.first_name, ' ', c.last_name) = customer_full_name
+    LIMIT 1;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
