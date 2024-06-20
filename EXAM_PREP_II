@@ -1,4 +1,4 @@
-CREATE TABLE countries(                                      ----> Database Design
+CREATE TABLE countries(                                      -------> Database Design
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
